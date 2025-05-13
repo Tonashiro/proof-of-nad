@@ -28,6 +28,17 @@ export const useSignIn = ({ autoSignIn = false }: { autoSignIn?: boolean }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (user) {
+      saveUserProfile({
+        ...user,
+        monad_wallet: null,
+        verified_wallet: false,
+        badges: [],
+      });
+    }
+  }, [user, saveUserProfile]);
+
   const { mutate: signIn, isPending } = useApiMutation<
     { user: NeynarUser },
     {
@@ -40,15 +51,8 @@ export const useSignIn = ({ autoSignIn = false }: { autoSignIn?: boolean }) => {
     url: "/api/auth/sign-in",
     method: "POST",
     body: (variables) => variables,
-    onSuccess: (data) => {
+    onSuccess: () => {
       setIsSignedIn(true);
-      
-      saveUserProfile({
-        ...data.user,
-        monad_wallet: null,
-        verified_wallet: false,
-        badges: [],
-      });
     },
     onError: (err) => {
       const errorMessage =
