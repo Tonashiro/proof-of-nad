@@ -486,26 +486,10 @@
     qrcode "^1.5.3"
     react-remove-scroll "^2.5.7"
 
-"@farcaster/frame-core@0.0.24":
+"@farcaster/frame-core@0.0.24", "@farcaster/frame-core@0.0.32", "@farcaster/frame-core@0.0.34", "@farcaster/frame-core@^0.0.24":
   version "0.0.24"
   resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.24.tgz#35c2403f561a74b6551e3032d6d57a730c3dc413"
   integrity sha512-iO/Jxz6mZBVUoLIY753Id5Yhn6DHBakQkIBXf0mreAcnjPGCMvKx/0xKEM3ns3M801PqoX7VLYO4q+kKxYzQ0A==
-  dependencies:
-    ox "^0.4.4"
-    zod "^3.24.1"
-
-"@farcaster/frame-core@0.0.32":
-  version "0.0.32"
-  resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.32.tgz#7d34b698aebde91d01d1a6fe221684dccf9dbb55"
-  integrity sha512-WkOa3Eq2cVQpHuykUn538SJNea7DZul+MqjjGjIZGjo0ScjRR09Ql9QmxG1twsRQrsp0jokpBCIMBBHnhwoaxQ==
-  dependencies:
-    ox "^0.4.4"
-    zod "^3.24.1"
-
-"@farcaster/frame-core@0.0.34":
-  version "0.0.34"
-  resolved "https://registry.yarnpkg.com/@farcaster/frame-core/-/frame-core-0.0.34.tgz#d378a8fbaf8c16e08a9fb8052dca33cec0f93363"
-  integrity sha512-hohopBJo9TH5C4M+3WzcvpWfuJ6bMXyqSx4gP1AvRT3F3MxHf0qCakicV4wiR3SM9FfPNcCjUcK3wSM+WzsDjA==
   dependencies:
     ox "^0.4.4"
     zod "^3.24.1"
