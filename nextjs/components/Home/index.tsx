@@ -167,7 +167,7 @@ export const Home: React.FC = () => {
         </DialogContent>
       </Dialog>
 
-      <div className="bg-white text-black min-h-screen py-10 px-6">
+      <div className="bg-white text-black min-h-screen">
         <div className="max-w-4xl mx-auto">
           <div className="relative mb-10">
             <Image
@@ -207,7 +207,7 @@ export const Home: React.FC = () => {
             </div>
           </div>
 
-          <div className="flex items-center justify-end pr-4 mb-4">
+          <div className="flex items-center justify-end pr-4 mb-4 ">
             <button className="flex items-center p-2 gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
               Refresh Badges <RefreshCw className="text-white" />
             </button>

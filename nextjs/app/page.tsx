@@ -11,7 +11,7 @@ const frame = {
     title: "Launch App",
     action: {
       type: "launch_frame",
-      name: "Mini-app Starter",
+      name: "Proof of Nad Starter",
       url: appUrl,
       splashImageUrl: `${appUrl}/images/splash.png`,
       splashBackgroundColor: "#ffffff",
@@ -21,10 +21,10 @@ const frame = {
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: "Mini-app Starter",
+    title: "Proof of Nad",
     openGraph: {
-      title: "Mini-app Starter",
-      description: "A starter for Farcastermini-apps",
+      title: "Proof of Nad",
+      description: "Proof of Nad is your passport to onchain recognition. Collect badges by being active on Farcaster and Monad. Mint what you've earned.",
     },
     other: {
       "fc:frame": JSON.stringify(frame),
