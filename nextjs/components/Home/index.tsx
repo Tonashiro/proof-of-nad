@@ -22,10 +22,10 @@ import { Spinner } from "@/components/Spinner";
 import { BadgeModal } from "@/components/BadgeModal";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
-import { RefreshCcw, RefreshCw, RefreshCwIcon } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 export const Home: React.FC = () => {
-  const { signIn, isLoading, isSignedIn, user } = useSignIn({
+  const { isSignedIn, user } = useSignIn({
     autoSignIn: true,
   });
   const [availableBadges, setAvailableBadges] = useState<Badge[]>([]);
