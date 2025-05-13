@@ -44,7 +44,7 @@ export async function getFarcasterManifest() {
       tagline: "Mint your onchain reputation", // 30 characters, marketing tagline should be punchy and descriptive
       ogTitle: "Proof of Nad - Onchain Rep", // 30 characters, app name + short tag, Title case, no emojis
       ogDescription:
-        "Earn and mint badges based on your Farcaster + Monad activity. Show the world what you've achieved.", // 100 characters, summarize core benefits in 1-2 lines
+        "Earn and mint badges based on your Farcaster and Monad activity. Show the world what you've achieved.", // 100 characters, summarize core benefits in 1-2 lines
       screenshotUrls: [
         // 1284 x 2778, visual previews of the app, max 3 screenshots
         `${appUrl}/images/feed.png`,
