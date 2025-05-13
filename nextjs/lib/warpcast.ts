@@ -38,13 +38,13 @@ export async function getFarcasterManifest() {
       // Metadata https://github.com/farcasterxyz/miniapps/discussions/191
       subtitle: "Earn badges. Prove your rep.", // 30 characters, no emojis or special characters, short description under app name
       description:
-        "Proof of Nad is your passport to onchain recognition. Collect badges by being active on Farcaster and Monad. Mint what you’ve earned.", // 170 characters, no emojis or special characters, promotional message displayed on Mini App Page
+        "Proof of Nad is your passport to onchain recognition. Collect badges by being active on Farcaster and Monad. Mint what you've earned.", // 170 characters, no emojis or special characters, promotional message displayed on Mini App Page
       primaryCategory: "social",
       tags: ["monad", "mini-app", "farcaster", "badges", "reputation"], // up to 5 tags, filtering/search tags
       tagline: "Mint your onchain reputation", // 30 characters, marketing tagline should be punchy and descriptive
-      ogTitle: "Proof of Nad – Onchain Rep", // 30 characters, app name + short tag, Title case, no emojis
+      ogTitle: "Proof of Nad - Onchain Rep", // 30 characters, app name + short tag, Title case, no emojis
       ogDescription:
-        "Earn and mint badges based on your Farcaster + Monad activity. Show the world what you’ve achieved.", // 100 characters, summarize core benefits in 1-2 lines
+        "Earn and mint badges based on your Farcaster + Monad activity. Show the world what you've achieved.", // 100 characters, summarize core benefits in 1-2 lines
       screenshotUrls: [
         // 1284 x 2778, visual previews of the app, max 3 screenshots
         `${appUrl}/images/feed.png`,
