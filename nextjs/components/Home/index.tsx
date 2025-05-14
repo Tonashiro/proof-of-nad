@@ -35,6 +35,7 @@ export const Home: React.FC = () => {
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [isMinting, setIsMinting] = useState(false);
 
   const { address, isConnected } = useAccount();
   const { connect, connectAsync } = useConnect();
@@ -53,7 +54,7 @@ export const Home: React.FC = () => {
     },
   });
 
-  const { isFetching } = useQuery({
+  const { isFetching, refetch: refetchBadges } = useQuery({
     queryKey: ["availableBadges", address, user?.fid],
     queryFn: async () => {
       if (!address || !user?.fid) return [];
@@ -79,6 +80,8 @@ export const Home: React.FC = () => {
 
   const mintBadge = async (badgeId: number, tokenURI: string) => {
     try {
+      setIsMinting(true);
+
       if (!isConnected) {
         const result = await connectAsync({ connector: injected() });
         if (!result?.accounts?.length) {
@@ -137,6 +140,8 @@ export const Home: React.FC = () => {
       console.log(
         "Mint failed: " + (err instanceof Error ? err.message : "Unknown")
       );
+    } finally {
+      setIsMinting(false);
     }
   };
 
@@ -154,33 +159,8 @@ export const Home: React.FC = () => {
           if (selectedBadge)
             mintBadge(selectedBadge.id, selectedBadge.tokenURI);
         }}
+        isMinting={isMinting}
       />
-
-      <Dialog open={walletModalOpen} onOpenChange={setWalletModalOpen}>
-        <DialogContent className="text-center max-w-[90%] rounded-lg sm:max-w-sm">
-          <p className="text-xl font-bold text-gray-900 mb-2">
-            Connected Wallet
-          </p>
-          <p className="text-sm text-gray-800 mb-4">
-            You&apos;re currently connected with{" "}
-            <span className="font-mono">
-              {address?.substring(0, 6)}...
-              {address?.substring(address.length - 4)}
-            </span>{" "}
-            . If you&apos;d like to switch to a different wallet, please
-            disconnect first.
-          </p>
-          <button
-            onClick={() => {
-              disconnect();
-              setWalletModalOpen(false);
-            }}
-            className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700"
-          >
-            Disconnect / Use Another Wallet
-          </button>
-        </DialogContent>
-      </Dialog>
 
       <div className="bg-white text-black min-h-screen">
         <div className="max-w-4xl mx-auto">
@@ -194,20 +174,10 @@ export const Home: React.FC = () => {
               priority
             />
             <div className="absolute top-4 right-4 flex items-center space-x-4">
-              {address ? (
-                <button
-                  onClick={() => setWalletModalOpen(true)}
-                  className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                >
+              {address && (
+                <button className="cursor-default px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
                   {address.substring(0, 6)}...
                   {address.substring(address.length - 4)}
-                </button>
-              ) : (
-                <button
-                  onClick={() => connect({ connector: injected() })}
-                  className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
-                >
-                  Connect Wallet
                 </button>
               )}
               {user?.pfp_url && (
@@ -223,7 +193,10 @@ export const Home: React.FC = () => {
           </div>
 
           <div className="flex items-center justify-end pr-4 mb-4 ">
-            <button className="flex items-center p-2 gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
+            <button
+              className="flex items-center p-2 gap-2 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+              onClick={() => refetchBadges()}
+            >
               Refresh Badges <RefreshCw className="text-white" />
             </button>
           </div>

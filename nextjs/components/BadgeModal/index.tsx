@@ -10,10 +10,12 @@ import {
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { Badge } from "@/lib/badges";
+import { Spinner } from "@/components/Spinner";
 
 interface BadgeModalProps {
   badge: Badge | null;
   isMinted: boolean;
+  isMinting: boolean;
   isAvailable: boolean;
   open: boolean;
   onClose?: () => void;
@@ -23,6 +25,7 @@ interface BadgeModalProps {
 export const BadgeModal: React.FC<BadgeModalProps> = ({
   badge,
   isMinted,
+  isMinting,
   isAvailable,
   open,
   onClose,
@@ -37,8 +40,12 @@ export const BadgeModal: React.FC<BadgeModalProps> = ({
   );
 
   const renderMintButton = () => (
-    <Button className="w-full mt-4" onClick={() => onClick()}>
-      Mint Badge
+    <Button
+      className="w-full mt-4"
+      onClick={() => onClick()}
+      disabled={isMinting}
+    >
+      {isMinting ? <Spinner size="h-6 w-6" /> : "Mint Badge"}
     </Button>
   );
 
