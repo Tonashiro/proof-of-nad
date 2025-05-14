@@ -23,6 +23,7 @@ import { BadgeModal } from "@/components/BadgeModal";
 import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { RefreshCw } from "lucide-react";
+import { WalletClient } from "viem";
 
 export const Home: React.FC = () => {
   const { isSignedIn, user } = useSignIn({
@@ -71,7 +72,9 @@ export const Home: React.FC = () => {
     enabled: !!address && !!user?.fid,
   });
 
-  const { data: walletClient } = useWalletClient({ chainId: monadTestnet.id });
+  const { data: walletClient } = useWalletClient({
+    chainId: monadTestnet.id,
+  }) as { data: WalletClient | undefined };
 
   const mintBadge = async (badgeId: number, tokenURI: string) => {
     try {
@@ -101,12 +104,14 @@ export const Home: React.FC = () => {
 
       const { signature } = await response.json();
 
-      const provider = new ethers.BrowserProvider(walletClient.transport);
-      const signer = await provider.getSigner();
-
-      const contract = new ethers.Contract(contractAddress, abi, signer);
-      const tx = await contract.mintBadge(badgeId, tokenURI, signature);
-      await tx.wait();
+      const txHash = await walletClient.writeContract({
+        address: contractAddress,
+        abi,
+        functionName: "mintBadge",
+        args: [badgeId, tokenURI, signature],
+        account: address ?? null,
+        chain: monadTestnet,
+      });
 
       await fetch("/api/badges/add", {
         method: "POST",
@@ -115,8 +120,8 @@ export const Home: React.FC = () => {
       });
 
       setMintedBadges((prev) => [...prev, badgeId]);
-      toast.success(`Badge minted sucessfully! Tx hash: ${tx.hash}`);
-      console.log(`Badge minted! Tx hash: ${tx.hash}`);
+      toast.success(`Badge minted sucessfully! Tx hash: ${txHash}`);
+      console.log(`Badge minted! Tx hash: ${txHash}`);
     } catch (err) {
       console.error("Mint error", err);
       console.log(
