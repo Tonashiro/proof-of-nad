@@ -9,10 +9,11 @@ import {
   useDisconnect,
   useSwitchChain,
 } from "wagmi";
+import { waitForTransactionReceipt } from "wagmi/actions";
 import { BadgeCard } from "@/components/BadgeCard";
 import { Badge, badges } from "@/lib/badges";
+import { farcasterFrame as miniAppConnector } from "@farcaster/frame-wagmi-connector";
 import { injected } from "wagmi/connectors";
-import { ethers } from "ethers";
 import { abi, contractAddress } from "@/contract";
 import { monadTestnet } from "viem/chains";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -24,6 +25,7 @@ import Image from "next/image";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { RefreshCw } from "lucide-react";
 import { WalletClient } from "viem";
+import { config } from "@/contexts/frame-wallet-context";
 
 export const Home: React.FC = () => {
   const { isSignedIn, user } = useSignIn({
@@ -52,7 +54,7 @@ export const Home: React.FC = () => {
     },
   });
 
-  const { isFetching, refetch: fetchBadges } = useQuery({
+  const { isFetching } = useQuery({
     queryKey: ["availableBadges", address, user?.fid],
     queryFn: async () => {
       if (!address || !user?.fid) return [];
@@ -112,6 +114,15 @@ export const Home: React.FC = () => {
         account: address ?? null,
         chain: monadTestnet,
       });
+
+      const receipt = await waitForTransactionReceipt(config, {
+        hash: txHash,
+        chainId: monadTestnet.id,
+      });
+
+      if (receipt.status !== "success") {
+        throw new Error("Transaction failed");
+      }
 
       await fetch("/api/badges/add", {
         method: "POST",
@@ -194,7 +205,7 @@ export const Home: React.FC = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => connect({ connector: injected() })}
+                  onClick={() => connect({ connector: miniAppConnector() })}
                   className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
                   Connect Wallet
