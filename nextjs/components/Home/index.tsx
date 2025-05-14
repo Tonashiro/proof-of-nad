@@ -2,11 +2,17 @@
 
 import { useSignIn } from "@/hooks/use-sign-in";
 import { useState } from "react";
-import { useAccount, useWalletClient, useConnect, useSwitchChain } from "wagmi";
-import { farcasterFrame as miniAppConnector } from "@farcaster/frame-wagmi-connector";
+import {
+  useAccount,
+  useWalletClient,
+  useConnect,
+  useDisconnect,
+  useSwitchChain,
+} from "wagmi";
 import { waitForTransactionReceipt } from "wagmi/actions";
 import { BadgeCard } from "@/components/BadgeCard";
 import { Badge, badges } from "@/lib/badges";
+import { injected } from "wagmi/connectors";
 import { abi, contractAddress } from "@/contract";
 import { monadTestnet } from "viem/chains";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,6 +21,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { Spinner } from "@/components/Spinner";
 import { BadgeModal } from "@/components/BadgeModal";
 import Image from "next/image";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { RefreshCw } from "lucide-react";
 import { WalletClient } from "viem";
 import { config } from "@/contexts/frame-wallet-context";
@@ -27,10 +34,12 @@ export const Home: React.FC = () => {
   const [mintedBadges, setMintedBadges] = useState<number[]>([]);
   const [selectedBadge, setSelectedBadge] = useState<Badge | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [isMinting, setIsMinting] = useState(false);
 
   const { address, isConnected } = useAccount();
-  const { connectAsync } = useConnect();
+  const { connect, connectAsync } = useConnect();
+  const { disconnect } = useDisconnect();
   const { switchChainAsync } = useSwitchChain();
 
   const { mutateAsync: fetchUser } = useMutation({
@@ -74,7 +83,7 @@ export const Home: React.FC = () => {
       setIsMinting(true);
 
       if (!isConnected) {
-        const result = await connectAsync({ connector: miniAppConnector() });
+        const result = await connectAsync({ connector: injected() });
         if (!result?.accounts?.length) {
           throw new Error("Wallet connection failed");
         }
@@ -104,7 +113,7 @@ export const Home: React.FC = () => {
         abi,
         functionName: "mintBadge",
         args: [badgeId, tokenURI, signature],
-        account: walletClient.account?.address ?? null,
+        account: address ?? null,
         chain: monadTestnet,
       });
 
@@ -153,6 +162,32 @@ export const Home: React.FC = () => {
         isMinting={isMinting}
       />
 
+      <Dialog open={walletModalOpen} onOpenChange={setWalletModalOpen}>
+        <DialogContent className="text-center max-w-[90%] rounded-lg sm:max-w-sm">
+          <p className="text-xl font-bold text-gray-900 mb-2">
+            Connected Wallet
+          </p>
+          <p className="text-sm text-gray-800 mb-4">
+            You&apos;re currently connected with{" "}
+            <span className="font-mono">
+              {address?.substring(0, 6)}...
+              {address?.substring(address.length - 4)}
+            </span>{" "}
+            . If you&apos;d like to switch to a different wallet, please
+            disconnect first.
+          </p>
+          <button
+            onClick={() => {
+              disconnect();
+              setWalletModalOpen(false);
+            }}
+            className="px-6 py-2 bg-red-600 text-white font-medium rounded-md hover:bg-red-700"
+          >
+            Disconnect / Use Another Wallet
+          </button>
+        </DialogContent>
+      </Dialog>
+
       <div className="bg-white text-black min-h-screen">
         <div className="max-w-4xl mx-auto">
           <div className="relative mb-10">
@@ -165,12 +200,20 @@ export const Home: React.FC = () => {
               priority
             />
             <div className="absolute top-4 right-4 flex items-center space-x-4">
-              {walletClient?.account && (
-                <button className="cursor-default px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200">
-                  {walletClient?.account.address.substring(0, 6)}...
-                  {walletClient?.account.address.substring(
-                    walletClient?.account.address.length - 4
-                  )}
+              {address ? (
+                <button
+                  onClick={() => setWalletModalOpen(true)}
+                  className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  {address.substring(0, 6)}...
+                  {address.substring(address.length - 4)}
+                </button>
+              ) : (
+                <button
+                  onClick={() => connect({ connector: injected() })}
+                  className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
+                >
+                  Connect Wallet
                 </button>
               )}
               {user?.pfp_url && (
