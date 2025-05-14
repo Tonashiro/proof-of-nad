@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ethers } from "ethers";
 
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
 const signer = new ethers.Wallet(process.env.PRIVATE_KEY!, provider);
 
 export async function POST(req: NextRequest) {

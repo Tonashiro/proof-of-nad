@@ -6,7 +6,7 @@ import { monadTestnet } from "wagmi/chains";
 export const config = createConfig({
   chains: [monadTestnet],
   transports: {
-    [monadTestnet.id]: http(),
+    [monadTestnet.id]: http(process.env.NEXT_PUBLIC_RPC_URL),
   },
   connectors: [miniAppConnector()],
 });
@@ -15,7 +15,7 @@ const queryClient = new QueryClient();
 
 export default function FrameWalletProvider({
   children,
-}: {
+}: {  
   children: React.ReactNode;
 }) {
   return (
