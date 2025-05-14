@@ -12,7 +12,6 @@ import {
 import { waitForTransactionReceipt } from "wagmi/actions";
 import { BadgeCard } from "@/components/BadgeCard";
 import { Badge, badges } from "@/lib/badges";
-import { farcasterFrame as miniAppConnector } from "@farcaster/frame-wagmi-connector";
 import { injected } from "wagmi/connectors";
 import { abi, contractAddress } from "@/contract";
 import { monadTestnet } from "viem/chains";
@@ -205,7 +204,7 @@ export const Home: React.FC = () => {
                 </button>
               ) : (
                 <button
-                  onClick={() => connect({ connector: miniAppConnector() })}
+                  onClick={() => connect({ connector: injected() })}
                   className="px-6 py-3 bg-purple-600 text-white font-semibold rounded-lg shadow-md hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 disabled:opacity-50 disabled:cursor-not-allowed transition-colors duration-200"
                 >
                   Connect Wallet
